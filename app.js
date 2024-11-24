@@ -1,4 +1,7 @@
-const BASE_URL =  "https://currency-exchange.p.rapidapi.com/listquotes";
+// const BASE_URL =  "https://currency-exchange.p.rapidapi.com/listquotes";
+const BASE_URL =  "https://currency-converter13.p.rapidapi.com/convert?from=";
+// https://currency-converter13.p.rapidapi.com/convert?from=USD&to=BRL&amount=1
+
 const dropdowns = document.querySelectorAll(".dropdown select");
 const fromCurr = document.querySelector(".from select");
 const toCurr = document.querySelector(".to select");
@@ -37,12 +40,24 @@ const updateExchangeRate = async () => {
         amtVal = 1;
         amount.value = "1";
     }
-    const URL = `${BASE_URL}/${fromCurr.value.toLowerCase}/${toCurr.value.toLowerCase}.json`;
-    let response = await fetch(URL);
-    let data = await response.json;
-    let rate = data[toCurr.value.toLowerCase()];
-    let finalAmt = amtVal * rate;
+    const options = {
+      method: 'GET',
+      headers: {
+        'x-rapidapi-key': '2df09075a1msh3b4cac5554c0e28p1c028bjsnedcedf400e05',
+        'x-rapidapi-host': 'currency-converter13.p.rapidapi.com',
+      },
+    };
+    const URL = `${BASE_URL}${fromCurr.value}&to=${toCurr.value}&amount=${amtVal}`;
+    // const URL = `${BASE_URL}/${fromCurr.value.toLowerCase}/${toCurr.value.toLowerCase}.json`;
+    let response = await fetch(URL,options);
+    let data = await response.json();
+        let finalAmt = data.amount;
     msg.innerText = `${amtVal} ${fromCurr.value} = ${finalAmt} ${toCurr.value}`;
+
+    // let data = await response.json;
+    // let rate = data[toCurr.value.toLowerCase()];
+    // let finalAmt = amtVal * rate;
+    // msg.innerText = `${amtVal} ${fromCurr.value} = ${finalAmt} ${toCurr.value}`;
 }
 
 btn.addEventListener("click", (evt) => {

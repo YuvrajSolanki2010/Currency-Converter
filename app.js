@@ -7,6 +7,7 @@ const fromCurr = document.querySelector(".from select");
 const toCurr = document.querySelector(".to select");
 const msg = document.querySelector(".msg");
 const btn = document.querySelector(".ex-btn");
+
 for (let select of dropdowns) {
     for (currCode in countryList) {
       let newOption = document.createElement("option");
@@ -14,22 +15,25 @@ for (let select of dropdowns) {
       newOption.value = currCode;
       if (select.name === "from" && currCode === "USD") {
         newOption.selected = "selected";
+       
       } else if (select.name === "to" && currCode === "INR") {
         newOption.selected = "selected";
       }
       select.append(newOption);
     }
     select.addEventListener("click", (evt) => {
-        updateFlag(evt.target);
+        updateFlag(evt.target,select.name);
     })
 }
 
-const updateFlag = (element) => {
+const updateFlag = (element,by) => {
     let currCode = element.value;
     let countryCode = countryList[currCode];
-    let newSrc = `https://flagcdn.com/w320/${countryCode}.png`
+    let newSrc = `https://flagcdn.com/w320/${countryCode?.toLowerCase()}.png`
+    console.log(newSrc);
     // let newSrc = `https://flagsapi.com/${countryCode}/flat/64.png`;
-    let img = document.querySelectorAll("img");
+    let img = document.getElementById(by !='from'?"to_img":"from_img");
+    // let img = document.querySelectorAll("img");
     img.src = newSrc;
 }
 
@@ -52,7 +56,7 @@ const updateExchangeRate = async () => {
     let response = await fetch(URL,options);
     let data = await response.json();
     console.log("response : ",data)
-        let finalAmt = data.amount;
+        let finalAmt = parseFloat(data.amount).toFixed(2);
     msg.innerText = finalAmt ?`${amtVal} ${fromCurr.value} = ${finalAmt} ${toCurr.value}`:'Please Try Again Later';
 
     // let data = await response.json;
